@@ -7,8 +7,8 @@
   
   if (!CONTAINER) return;
   
-  // rss2json free API (works for small volumes without key)
-  const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}&count=${ARTICLE_COUNT}`;
+  // rss2json free API (no count param without API key)
+  const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
   
   fetch(API_URL)
     .then(res => res.json())
@@ -18,7 +18,10 @@
         return;
       }
       
-      const articles = data.items.slice(0, ARTICLE_COUNT).map(item => {
+      // Slice to desired count (API returns all items)
+      const items = data.items.slice(0, ARTICLE_COUNT);
+      
+      const articles = items.map(item => {
         const date = new Date(item.pubDate).toLocaleDateString('en-US', { 
           year: 'numeric', 
           month: 'long', 
